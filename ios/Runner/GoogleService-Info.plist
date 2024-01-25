@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCJERan6Dll471x5d8qpZl_GVZg6Nr1-OU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>757028309911</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.yurkoadmin</string>
+	<key>PROJECT_ID</key>
+	<string>the-yurko-method-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>the-yurko-method-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:757028309911:ios:32b4e76e6db9b69b1bd2d2</string>
+</dict>
+</plist>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "757028309911",
+    "project_id": "the-yurko-method-app",
+    "storage_bucket": "the-yurko-method-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757028309911:android:06ece79ac5baefd61bd2d2",
+        "android_client_info": {
+          "package_name": "com.example.the_yurko_method"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoXNTWVkntNEX06e_OZH0oCaZ4F7Sx-Qw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757028309911:android:811033667fdd9abd1bd2d2",
+        "android_client_info": {
+          "package_name": "com.example.yurkoadmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoXNTWVkntNEX06e_OZH0oCaZ4F7Sx-Qw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
