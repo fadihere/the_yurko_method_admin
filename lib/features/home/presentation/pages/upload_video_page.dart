@@ -1,12 +1,19 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:the_yurko_method/core/constants/app_colors.dart';
 import 'package:the_yurko_method/core/constants/app_style.dart';
+import 'package:the_yurko_method/core/services/firebase/database/firestore_service.dart';
+import 'package:the_yurko_method/core/utils/functions/functions.dart';
 import 'package:the_yurko_method/core/widgets/app_button.dart';
 import 'package:the_yurko_method/core/widgets/text_form_field.dart';
+import 'package:the_yurko_method/features/home/data/model/video_model.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import '../../../../core/services/firebase/storage/firestore_storage.dart';
 
 class UploadVideoPage extends StatefulWidget {
   const UploadVideoPage({Key? key}) : super(key: key);
@@ -16,9 +23,12 @@ class UploadVideoPage extends StatefulWidget {
 }
 
 class _UploadVideoPageState extends State<UploadVideoPage> {
-  File? galleryFile;
+  final titleController = TextEditingController();
+  final desController = TextEditingController();
+  File? file;
   final picker = ImagePicker();
   Uint8List? imageBytes;
+  bool isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +55,9 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
                     'Title',
                     style: AppTextStyle.inter18Normal400(),
                   ),
-                  const CustomTextFormField(),
+                  CustomTextFormField(
+                    controller: titleController,
+                  ),
                   SizedBox(height: 20.h), // Adjust as needed
                   Text(
                     'Description',
@@ -55,6 +67,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
                   TextFormField(
                     maxLines: 3,
                     cursorColor: AppColors.primary,
+                    controller: desController,
                     decoration: InputDecoration(
                       fillColor: const Color(0xffF1F1F1),
                       contentPadding: const EdgeInsets.symmetric(
@@ -112,7 +125,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Center(
-                          child: galleryFile != null
+                          child: file != null
                               ? const Icon(Icons.play_arrow)
                               : const Icon(Icons.add)),
                     ),
@@ -120,10 +133,14 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
                 ],
               ),
               SizedBox(height: 180.h),
-              AppButton(
-                text: 'Upload',
-                onTap: () {},
-              ),
+              isUploading
+                  ? const CircularProgressIndicator()
+                  : AppButton(
+                      text: 'Upload',
+                      onTap: () {
+                        _uploadVideo();
+                      },
+                    ),
             ],
           ),
         ),
@@ -174,12 +191,66 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
     XFile? xfilePick = pickedFile;
     setState(() {
       if (xfilePick != null) {
-        galleryFile = File(pickedFile!.path);
+        file = File(pickedFile!.path);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Nothing is selected')),
         );
       }
+    });
+  }
+
+  Future<void> _uploadVideo() async {
+    if (file == null ||
+        titleController.text.isEmpty ||
+        desController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill all fields and select a video'),
+        ),
+      );
+      return;
+    }
+    setState(() {
+      isUploading = true;
+    });
+
+    // Upload video file to Firebase Storage
+    String videoUrl = await FirestoreStorage().uploadVideo(file!);
+    final thumbnailUint8List = await VideoThumbnail.thumbnailFile(
+      video: file!.path,
+      imageFormat: ImageFormat.PNG,
+      quality: 75,
+    );
+    log(thumbnailUint8List.toString());
+    if (thumbnailUint8List == null) return;
+    String thumbnailUrl =
+        await FirestoreStorage().uploadPhtoto(File(thumbnailUint8List));
+
+    final video = VideoModel(
+      id: getRandomString(25),
+      url: videoUrl,
+      title: titleController.text.trim(),
+      description: desController.text.trim(),
+      createdAt: DateTime.now(),
+      weeklyViews: 0,
+      totalViews: 0,
+      thumbnail: thumbnailUrl,
+    );
+
+    await FirestoreService().createVideo(video);
+
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Video uploaded successfully')),
+    );
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
+
+    setState(() {
+      isUploading = false;
+      titleController.clear();
+      desController.clear();
     });
   }
 }
