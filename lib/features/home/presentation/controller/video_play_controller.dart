@@ -3,19 +3,27 @@ import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayController extends GetxController {
-  VideoPlayerController videoController = VideoPlayerController.networkUrl(
-      Uri.parse(
-          "https://media.istockphoto.com/id/1438537439/video/5g-wireless-network-signal-data-transmission-and-connection.mp4?s=mp4-640x640-is&k=20&c=2yV0gA112cj5sBzN93Q4lbW25kiZanU7agSjjOR4DEE="));
-  late ChewieController controller;
+  final String videoUrl;
+  VideoPlayController({required this.videoUrl});
+  VideoPlayerController? videoController;
+  ChewieController? controller;
 
   @override
-  void onInit() {
+  void onInit() async {
+    videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+    await videoController!.initialize();
     controller = ChewieController(
-      videoPlayerController: videoController,
-      allowFullScreen: true,
-      autoPlay: true,
+      videoPlayerController: videoController!,
     );
     update();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    videoController?.dispose();
+    controller?.dispose();
+
+    super.onClose();
   }
 }

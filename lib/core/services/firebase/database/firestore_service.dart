@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:the_yurko_method/features/auth/data/models/user_model.dart';
+import 'package:the_yurko_method/features/home/data/model/video_model.dart';
 
 enum Collection { users, videos }
 
@@ -13,6 +14,21 @@ class FirestoreService {
           .collection(Collection.users.name)
           .doc(user.uid)
           .set(user.toMap());
+      return true;
+    } on FirebaseException catch (e) {
+      log(e.message.toString());
+      Get.snackbar(e.code, e.message ?? "something went wrong");
+
+      return false;
+    }
+  }
+
+  Future<bool> createVideo(VideoModel video) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(Collection.videos.name)
+          .doc(video.id)
+          .set(video.toMap());
       return true;
     } on FirebaseException catch (e) {
       log(e.message.toString());
@@ -50,4 +66,18 @@ class FirestoreService {
       return false;
     }
   }
+
+  // Stream<List<VideoModel>> getVideos() async {
+  //   try {
+  //     final res =  FirebaseFirestore.instance
+  //         .collection(Collection.videos.name)
+  //         .snapshots();
+
+  //     return res.docs.map((e) => VideoModel.fromMap(e.data())).toList();
+  //   } on FirebaseException catch (e) {
+  //     log(e.message.toString());
+  //     Get.snackbar(e.code, e.message ?? "something went wrong");
+  //     return [];
+  //   }
+  // }
 }
