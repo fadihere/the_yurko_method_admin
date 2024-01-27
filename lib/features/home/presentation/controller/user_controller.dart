@@ -29,7 +29,9 @@ class UserController extends GetxController {
         message: "Something went wrong. Please try again!",
         firstCallBack: () {},
         secondButtonText: "Okay",
-        secondCallBack: () {},
+        secondCallBack: () {
+          Get.back();
+        },
       );
       return;
     }

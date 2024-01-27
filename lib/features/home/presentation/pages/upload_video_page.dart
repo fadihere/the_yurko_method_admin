@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:the_yurko_method/core/constants/app_colors.dart';
 import 'package:the_yurko_method/core/constants/app_style.dart';
 import 'package:the_yurko_method/core/services/firebase/database/firestore_service.dart';
@@ -13,6 +13,7 @@ import 'package:the_yurko_method/core/widgets/app_button.dart';
 import 'package:the_yurko_method/core/widgets/text_form_field.dart';
 import 'package:the_yurko_method/features/home/data/model/video_model.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+
 import '../../../../core/services/firebase/storage/firestore_storage.dart';
 
 class UploadVideoPage extends StatefulWidget {

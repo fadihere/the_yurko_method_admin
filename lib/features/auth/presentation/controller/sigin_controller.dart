@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:the_yurko_method/core/services/firebase/database/firestore_service.dart';
 import 'package:the_yurko_method/core/utils/helper/loading_helper.dart';
-import 'package:the_yurko_method/core/widgets/dialog.dart';
 import 'package:the_yurko_method/features/home/presentation/controller/user_controller.dart';
 
 import '../../../../core/services/firebase/auth/firebase_auth_service.dart';
@@ -51,17 +50,17 @@ class SignInController extends GetxController {
     final userModel = await _firestoreService.getUser(user.user!.uid);
     LoadingHelper.hideLoading();
     if (userModel == null) return;
-    final isAdmin = userModel.role == "admin";
-    if (!isAdmin) {
-      AppDialog(Get.context!).showOSDialog(
-        title: "Sorry",
-        message: "You are not authorised to access admin panel",
-        firstCallBack: () {},
-        secondButtonText: "Okay",
-        secondCallBack: () {},
-      );
-      return;
-    }
+    // final isAdmin = userModel.role == "admin";
+    // if (!isAdmin) {
+    //   AppDialog(Get.context!).showOSDialog(
+    //     title: "Sorry",
+    //     message: "You are not authorised to access admin panel",
+    //     firstCallBack: () {},
+    //     secondButtonText: "Okay",
+    //     secondCallBack: () {},
+    //   );
+    //   return;
+    // }
     userController.user = userModel;
     _rememberMe();
     Get.offAll(() => const VideoPage());
