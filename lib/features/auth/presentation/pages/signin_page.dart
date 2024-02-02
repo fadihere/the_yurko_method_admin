@@ -8,7 +8,9 @@ import 'package:the_yurko_method/core/utils/validators/auth_validators.dart';
 import 'package:the_yurko_method/core/widgets/app_appbar.dart';
 import 'package:the_yurko_method/core/widgets/app_button.dart';
 import 'package:the_yurko_method/features/auth/presentation/controller/sigin_controller.dart';
+
 import '../../../../core/widgets/text_form_field.dart';
+import 'forget_password_page.dart';
 
 class SigninPage extends StatelessWidget {
   const SigninPage({super.key});
@@ -104,10 +106,15 @@ class SigninPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Text(
-                            'Forgot the password?',
-                            style: AppTextStyle.inter14Normal400().copyWith(
-                              color: AppColors.primary,
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => const ForgetPasswordPage());
+                            },
+                            child: Text(
+                              'Forgot the password?',
+                              style: AppTextStyle.inter14Normal400().copyWith(
+                                color: AppColors.primary,
+                              ),
                             ),
                           ),
                         ],

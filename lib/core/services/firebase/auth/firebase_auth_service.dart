@@ -74,7 +74,7 @@ class ForgetPasswordService extends _AuthService {
       return true;
     } on FirebaseAuthException catch (e) {
       log(e.message.toString());
-
+      Get.snackbar(e.code, e.message ?? "something went wrong");
       return false;
     }
   }
