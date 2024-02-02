@@ -10,6 +10,8 @@ import 'package:the_yurko_method/core/widgets/app_button.dart';
 import 'package:the_yurko_method/features/home/data/model/video_model.dart';
 import 'package:the_yurko_method/features/home/presentation/controller/video_play_controller.dart';
 
+import '../../../../core/widgets/dialog.dart';
+
 class VideoPlayPage extends StatelessWidget {
   final VideoModel video;
   const VideoPlayPage({super.key, required this.video});
@@ -79,11 +81,9 @@ class VideoPlayPage extends StatelessWidget {
                           color: AppColors.black,
                         ),
                       ),
-                      SizedBox(
-                        width: 20.w,
-                      ),
+                      SizedBox(width: 20.w),
                       Text(
-                        '12 min',
+                        '${'${video.duration.minutes}'.padLeft(2, "0")} min',
                         style: AppTextStyle.inter18Normal400().copyWith(
                           color: AppColors.black,
                         ),
@@ -97,9 +97,22 @@ class VideoPlayPage extends StatelessWidget {
               text: 'Delete Video',
               color: const Color(0xffFF3434),
               onTap: () {
-                deleteVideo();
+                AppDialog(context).showOSDialog(
+                  title: "Message",
+                  message: "Do you really want to delete this video?",
+                  firstButtonText: "Cancel",
+                  firstCallBack: () {
+                    Get.back();
+                  },
+                  secondButtonText: "Delete",
+                  secondCallBack: () {
+                    deleteVideo();
+                    Get.back();
+                  },
+                );
               },
             ),
+            const SizedBox(height: 25),
           ],
         ),
       ),

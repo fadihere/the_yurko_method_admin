@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_video_info/flutter_video_info.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:the_yurko_method/core/constants/app_colors.dart';
 import 'package:the_yurko_method/core/constants/app_style.dart';
@@ -216,7 +217,6 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
       isUploading = true;
     });
 
-    // Upload video file to Firebase Storage
     String videoUrl = await FirestoreStorage().uploadVideo(file!);
     final thumbnailUint8List = await VideoThumbnail.thumbnailFile(
       video: file!.path,
@@ -226,8 +226,12 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
     log(thumbnailUint8List.toString());
     if (thumbnailUint8List == null) return;
     String thumbnailUrl =
-        await FirestoreStorage().uploadPhtoto(File(thumbnailUint8List));
+        await FirestoreStorage().uploadPhoto(File(thumbnailUint8List));
+    final videoInfo = FlutterVideoInfo();
 
+    final info = await videoInfo.getVideoInfo(file!.path);
+    if (info == null) return;
+    final duration = Duration(milliseconds: info.duration?.toInt() ?? 0);
     final video = VideoModel(
       id: getRandomString(25),
       url: videoUrl,
@@ -237,6 +241,10 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
       weeklyViews: 0,
       totalViews: 0,
       thumbnail: thumbnailUrl,
+      duration: DurationModel(
+        minutes: duration.inMinutes,
+        seconds: duration.inSeconds,
+      ),
     );
 
     await FirestoreService().createVideo(video);

@@ -21,12 +21,8 @@ class SplashPage extends StatelessWidget {
               width: 508.w,
             ),
           ),
-          Center(
-            child: Image.asset(
-              AppImages.loding,
-              height: 50.h,
-              width: 50.w,
-            ),
+          const Center(
+            child: CircularProgressIndicator.adaptive(),
           ),
         ],
       ),

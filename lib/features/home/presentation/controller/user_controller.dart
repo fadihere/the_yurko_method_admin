@@ -40,7 +40,7 @@ class UserController extends GetxController {
 
   void uploadProfile(File image) async {
     LoadingHelper.showLoading();
-    final url = await _firestoreStorage.uploadPhtoto(image);
+    final url = await _firestoreStorage.uploadPhoto(image);
     user = user.copyWith(profileUrl: url);
     _firestoreService.updateUser(user);
     LoadingHelper.hideLoading();
