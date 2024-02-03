@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +11,7 @@ class VideoModel {
   final String thumbnail;
   final int weeklyViews;
   final int totalViews;
+  final int? order;
   final DurationModel duration;
   VideoModel({
     required this.id,
@@ -23,6 +23,7 @@ class VideoModel {
     required this.weeklyViews,
     required this.totalViews,
     required this.duration,
+    this.order,
   });
 
   VideoModel copyWith({
@@ -35,6 +36,7 @@ class VideoModel {
     int? weeklyViews,
     int? totalViews,
     DurationModel? duration,
+    int? order,
   }) {
     return VideoModel(
       id: id ?? this.id,
@@ -46,6 +48,7 @@ class VideoModel {
       weeklyViews: weeklyViews ?? this.weeklyViews,
       totalViews: totalViews ?? this.totalViews,
       duration: duration ?? this.duration,
+      order: order ?? this.order,
     );
   }
 
@@ -60,6 +63,7 @@ class VideoModel {
       'weeklyViews': weeklyViews,
       'totalViews': totalViews,
       'duration': duration.toMap(),
+      'order': order
     };
   }
 
@@ -74,6 +78,7 @@ class VideoModel {
       weeklyViews: map['weeklyViews'] as int,
       totalViews: map['totalViews'] as int,
       duration: DurationModel.fromMap(map['duration'] as Map<String, dynamic>),
+      order: map['order'] as int?,
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,6 +54,7 @@ class _VideoPageState extends State<VideoPage> {
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection(Collection.videos.name)
+                    .orderBy('order', descending: false)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -68,7 +70,7 @@ class _VideoPageState extends State<VideoPage> {
                     final videos = snapshot.data!.docs
                         .map((e) => VideoModel.fromMap(e.data()))
                         .toList();
-                    videos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
                     return ReorderableListView.builder(
                       shrinkWrap: true,
                       onReorder: (oldIndex, newIndex) async {
@@ -79,13 +81,11 @@ class _VideoPageState extends State<VideoPage> {
                           FirebaseFirestore.instance
                               .collection(Collection.videos.name)
                               .doc(videos[oldIndex].id)
-                              .update(
-                                  {'createdAt': videos[newIndex].createdAt}),
+                              .update({'order': newIndex}),
                           FirebaseFirestore.instance
                               .collection(Collection.videos.name)
                               .doc(videos[newIndex].id)
-                              .update(
-                                  {'createdAt': videos[oldIndex].createdAt}),
+                              .update({'order': oldIndex}),
                         ]);
                       },
                       itemCount: videos.length,
@@ -101,6 +101,7 @@ class _VideoPageState extends State<VideoPage> {
                 },
               ),
             ),
+            const SizedBox(height: 15),
             AppButton(
               text: 'Upload Video',
               onTap: () {
@@ -115,7 +116,7 @@ class _VideoPageState extends State<VideoPage> {
   }
 }
 
-class VideoTile extends StatefulWidget {
+class VideoTile extends StatelessWidget {
   const VideoTile({
     super.key,
     required this.video,
@@ -124,41 +125,49 @@ class VideoTile extends StatefulWidget {
   final VideoModel video;
 
   @override
-  State<VideoTile> createState() => _VideoTileState();
-}
-
-class _VideoTileState extends State<VideoTile> {
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.to(VideoPlayPage(video: widget.video)),
+      onTap: () => Get.to(VideoPlayPage(video: video)),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 5),
         height: 150.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r),
-          image: DecorationImage(
-            image: NetworkImage(widget.video.thumbnail),
-            fit: BoxFit.cover,
-          ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                widget.video.title,
-                style: AppTextStyle.inter24Normal400(),
+        child: Stack(
+          children: [
+            CachedNetworkImage(
+              imageUrl: video.thumbnail,
+              imageBuilder: (context, image) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-              Text(
-                '${'${widget.video.duration.minutes}'.padLeft(2, "0")} min',
-                textAlign: TextAlign.start,
-                style: AppTextStyle.inter14Normal400(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    video.title,
+                    style: AppTextStyle.inter24Normal400(),
+                  ),
+                  Text(
+                    '${'${video.duration.minutes}'.padLeft(2, "0")} min',
+                    textAlign: TextAlign.start,
+                    style: AppTextStyle.inter14Normal400(),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -11,6 +11,7 @@ class AppDialog {
     String? firstButtonText,
     required VoidCallback firstCallBack,
     required String secondButtonText,
+    Color? secondButtonColor,
     required VoidCallback secondCallBack,
     bool? isHost,
   }) async {
@@ -25,6 +26,7 @@ class AppDialog {
           firstCallback: firstCallBack,
           secondButtonText: secondButtonText,
           secondCallback: secondCallBack,
+          secondButtonColor: secondButtonColor,
         );
       },
     );
@@ -34,7 +36,7 @@ class AppDialog {
 class CustomDialog extends StatelessWidget {
   final String title, description, firstButtonText, secondButtonText;
   final VoidCallback firstCallback, secondCallback;
-
+  final Color? secondButtonColor;
   const CustomDialog({
     Key? key,
     required this.title,
@@ -43,6 +45,7 @@ class CustomDialog extends StatelessWidget {
     required this.secondCallback,
     required this.firstButtonText,
     required this.secondButtonText,
+    this.secondButtonColor,
   }) : super(key: key);
 
   @override
@@ -97,7 +100,7 @@ class CustomDialog extends StatelessWidget {
                       child: Text(
                         firstButtonText,
                         softWrap: true,
-                        style: const TextStyle(color: AppColors.primary),
+                        style: const TextStyle(color: AppColors.font),
                       ),
                     ),
                   ),
@@ -108,7 +111,7 @@ class CustomDialog extends StatelessWidget {
                     elevation: 0,
                     disabledElevation: 0,
                     onPressed: secondCallback,
-                    color: AppColors.primary,
+                    color: secondButtonColor ?? AppColors.primary,
                     child: Text(
                       secondButtonText,
                       style: const TextStyle(color: AppColors.white),

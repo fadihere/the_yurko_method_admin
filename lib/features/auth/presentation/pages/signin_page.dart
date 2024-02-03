@@ -67,45 +67,46 @@ class SigninPage extends StatelessWidget {
                         height: 25.h,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 22.w,
-                                height: 22.h,
-                                child: GetBuilder<SignInController>(
-                                  builder: (_) {
-                                    return Checkbox(
-                                      activeColor: AppColors.primary,
-                                      value: controller.isRemember,
-                                      onChanged: controller.onTapRemember,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
-                                      side: MaterialStateBorderSide.resolveWith(
-                                        (states) => const BorderSide(
-                                          width: 1.0,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                'Remember me',
-                                style: AppTextStyle.inter14Normal400().copyWith(
-                                  color: AppColors.black,
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     SizedBox(
+                          //       width: 22.w,
+                          //       height: 22.h,
+                          //       child: GetBuilder<SignInController>(
+                          //         builder: (_) {
+                          //           return Checkbox(
+                          //             activeColor: AppColors.primary,
+                          //             value: controller.isRemember,
+                          //             onChanged: controller.onTapRemember,
+                          //             shape: RoundedRectangleBorder(
+                          //               borderRadius:
+                          //                   BorderRadius.circular(5.0),
+                          //             ),
+                          //             side: MaterialStateBorderSide.resolveWith(
+                          //               (states) => const BorderSide(
+                          //                 width: 1.0,
+                          //                 color: AppColors.primary,
+                          //               ),
+                          //             ),
+                          //           );
+                          //         },
+                          //       ),
+                          //     ),
+                          //     SizedBox(
+                          //       width: 10.w,
+                          //     ),
+                          //     Text(
+                          //       'Remember me',
+                          //       style: AppTextStyle.inter14Normal400().copyWith(
+                          //         color: AppColors.black,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+
                           GestureDetector(
                             onTap: () {
                               Get.to(() => const ForgetPasswordPage());

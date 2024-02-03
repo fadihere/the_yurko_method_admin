@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:the_yurko_method/features/auth/data/models/user_model.dart';
 import 'package:the_yurko_method/features/home/data/model/video_model.dart';
+import 'package:the_yurko_method/features/home/data/model/view_model.dart';
 
-enum Collection { users, videos }
+enum Collection { users, videos, views }
 
 class FirestoreService {
   Future<bool> createUser(UserModel user) async {
@@ -67,17 +68,18 @@ class FirestoreService {
     }
   }
 
-  // Stream<List<VideoModel>> getVideos() async {
-  //   try {
-  //     final res =  FirebaseFirestore.instance
-  //         .collection(Collection.videos.name)
-  //         .snapshots();
+  Future<List<ViewModel>> getViews(VideoModel video) async {
+    try {
+      final res = await FirebaseFirestore.instance
+          .collection(Collection.videos.name)
+          .doc(video.id)
+          .collection(Collection.views.name)
+          .get();
 
-  //     return res.docs.map((e) => VideoModel.fromMap(e.data())).toList();
-  //   } on FirebaseException catch (e) {
-  //     log(e.message.toString());
-  //     Get.snackbar(e.code, e.message ?? "something went wrong");
-  //     return [];
-  //   }
-  // }
+      return res.docs.map((e) => ViewModel.fromMap(e.data())).toList();
+    } on FirebaseException catch (e) {
+      log(e.message.toString());
+      return [];
+    }
+  }
 }

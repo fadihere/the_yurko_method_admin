@@ -18,7 +18,7 @@ class VideoPlayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(VideoPlayController(videoUrl: video.url));
+    final controller = Get.put(VideoPlayController(videoModel: video));
     Future<void> deleteVideo() async {
       try {
         await FirebaseFirestore.instance
@@ -41,24 +41,28 @@ class VideoPlayPage extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
             Expanded(
               child: Column(
                 children: [
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: GetBuilder<VideoPlayController>(
-                      builder: (_) {
-                        return controller.controller != null
-                            ? Chewie(
-                                controller: controller.controller!,
-                              )
-                            : const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              );
-                      },
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: GetBuilder<VideoPlayController>(
+                        builder: (_) {
+                          return controller.controller != null
+                              ? Chewie(controller: controller.controller!)
+                              : Container(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  child: const Center(
+                                    child: CircularProgressIndicator.adaptive(),
+                                  ),
+                                );
+                        },
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -70,9 +74,7 @@ class VideoPlayPage extends StatelessWidget {
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
+                  const SizedBox(height: 15),
                   Row(
                     children: [
                       Text(
@@ -90,6 +92,50 @@ class VideoPlayPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Text(
+                        'Weekly Views',
+                        style: AppTextStyle.inter18Normal700().copyWith(
+                          color: AppColors.black,
+                        ),
+                      ),
+                      SizedBox(width: 20.w),
+                      GetBuilder<VideoPlayController>(
+                        builder: (_) {
+                          return Text(
+                            '${controller.weeklyViews}'.padLeft(2, "0"),
+                            style: AppTextStyle.inter18Normal400().copyWith(
+                              color: AppColors.black,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Text(
+                        'Total Views',
+                        style: AppTextStyle.inter18Normal700().copyWith(
+                          color: AppColors.black,
+                        ),
+                      ),
+                      SizedBox(width: 20.w),
+                      GetBuilder<VideoPlayController>(
+                        builder: (_) {
+                          return Text(
+                            '${controller.totalViews}'.padLeft(2, "0"),
+                            style: AppTextStyle.inter18Normal400().copyWith(
+                              color: AppColors.black,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -104,6 +150,7 @@ class VideoPlayPage extends StatelessWidget {
                   firstCallBack: () {
                     Get.back();
                   },
+                  secondButtonColor: Colors.red,
                   secondButtonText: "Delete",
                   secondCallBack: () {
                     deleteVideo();
