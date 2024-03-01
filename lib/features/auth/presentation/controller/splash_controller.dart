@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:the_yurko_method/features/auth/presentation/pages/base_page.dart';
 import 'package:the_yurko_method/features/auth/presentation/pages/signin_page.dart';
 import 'package:the_yurko_method/features/home/presentation/controller/user_controller.dart';
 import 'package:the_yurko_method/features/home/presentation/pages/video_page.dart';
@@ -29,7 +30,7 @@ class SplashController extends GetxController {
       return;
     }
     _userController.user = userModel;
-    Get.offAll(const VideoPage());
+    Get.offAll(const BasePage());
     return;
   }
 }

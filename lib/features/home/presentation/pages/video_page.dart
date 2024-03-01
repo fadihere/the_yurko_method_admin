@@ -1,116 +1,114 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:the_yurko_method/core/constants/app_colors.dart';
+import 'package:the_yurko_method/core/constants/app_fonts.dart';
+import 'package:the_yurko_method/core/constants/app_style.dart';
 import 'package:the_yurko_method/core/services/firebase/database/firestore_service.dart';
-import 'package:the_yurko_method/core/widgets/app_button.dart';
 import 'package:the_yurko_method/features/home/data/model/video_model.dart';
-import 'package:the_yurko_method/features/home/presentation/controller/user_controller.dart';
-import 'package:the_yurko_method/features/home/presentation/pages/upload_video_page.dart';
+import 'package:the_yurko_method/features/home/presentation/pages/video_play_page.dart';
+import 'package:the_yurko_method/features/master_class/screens/upload_master_video.dart';
 
-import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/app_style.dart';
-import 'video_play_page.dart';
-
-class VideoPage extends StatefulWidget {
+class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
 
   @override
-  State<VideoPage> createState() => _VideoPageState();
-}
-
-class _VideoPageState extends State<VideoPage> {
-  @override
   Widget build(BuildContext context) {
-    final userController = Get.put(UserController());
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              userController.logout();
-            },
-            icon: const Icon(Icons.logout),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        child: Column(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Row(
           children: [
-            Row(
-              children: [
-                Text(
-                  'Videos',
-                  style: AppTextStyle.inter32Normal400().copyWith(
-                    color: AppColors.black,
-                  ),
+            Text(
+              'Master Class'.toUpperCase(),
+              style: const TextStyle(
+                  fontFamily: AppFonts.archivoBlack,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 30,
+                  color: AppColors.black,
+                  letterSpacing: 1),
+            ),
+            const Spacer(),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Get.to(const UploadMasterVideoPage()),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 7, horizontal: 17),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: AppColors.primary,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xff93469F).withOpacity(0.25),
+                        offset: const Offset(0, 10),
+                        blurRadius: 30,
+                        spreadRadius: 0,
+                      )
+                    ]),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add_box_rounded,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      'ADD',
+                      style: TextStyle(
+                          fontFamily: AppFonts.archivoBlack,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: Colors.white),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Expanded(
-              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection(Collection.videos.name)
-                    .orderBy('order', descending: false)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else {
-                    final videos = snapshot.data!.docs
-                        .map((e) => VideoModel.fromMap(e.data()))
-                        .toList();
-
-                    return ReorderableListView.builder(
-                      shrinkWrap: true,
-                      onReorder: (oldIndex, newIndex) async {
-                        if (newIndex > oldIndex) {
-                          newIndex -= 1;
-                        }
-                        Future.wait([
-                          FirebaseFirestore.instance
-                              .collection(Collection.videos.name)
-                              .doc(videos[oldIndex].id)
-                              .update({'order': newIndex}),
-                          FirebaseFirestore.instance
-                              .collection(Collection.videos.name)
-                              .doc(videos[newIndex].id)
-                              .update({'order': oldIndex}),
-                        ]);
-                      },
-                      itemCount: videos.length,
-                      itemBuilder: (context, index) {
-                        final video = videos[index];
-                        return VideoTile(
-                          key: ValueKey(video),
-                          video: video,
-                        );
-                      },
-                    );
-                  }
-                },
               ),
-            ),
-            const SizedBox(height: 15),
-            AppButton(
-              text: 'Upload Video',
-              onTap: () {
-                Get.to(const UploadVideoPage());
-              },
-            ),
-            const SizedBox(height: 25),
+            )
           ],
         ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FirestoreQueryBuilder<Map<String, dynamic>>(
+              query:
+                  FirebaseFirestore.instance.collection(Collection.videos.name),
+              builder: (context, snapshot, _) {
+                if (snapshot.isFetching) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else {
+                  final videos = snapshot.docs
+                      .map((e) => VideoModel.fromMap(e.data()))
+                      .toList();
+                  videos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: videos.length,
+                    itemBuilder: (context, index) {
+                      final video = videos[index];
+
+                      return VideoTile(video: video);
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

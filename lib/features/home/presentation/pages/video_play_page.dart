@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:the_yurko_method/core/constants/app_colors.dart';
+import 'package:the_yurko_method/core/constants/app_fonts.dart';
 import 'package:the_yurko_method/core/constants/app_style.dart';
 import 'package:the_yurko_method/core/services/firebase/database/firestore_service.dart';
 import 'package:the_yurko_method/core/widgets/app_button.dart';
@@ -33,111 +34,154 @@ class VideoPlayPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Sit up Exercise',
-          style: AppTextStyle.inter24Normal400().copyWith(
-            color: AppColors.black,
-          ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              video.title.toUpperCase(),
+              style: const TextStyle(
+                  fontFamily: AppFonts.archivoBlack,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 30,
+                  color: AppColors.black,
+                  letterSpacing: 1),
+            ),
+          ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            Expanded(
-              child: Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: GetBuilder<VideoPlayController>(
-                        builder: (_) {
-                          return controller.controller != null
-                              ? Chewie(controller: controller.controller!)
-                              : Container(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  child: const Center(
-                                    child: CircularProgressIndicator.adaptive(),
-                                  ),
-                                );
-                        },
-                      ),
+            const SizedBox(height: 40),
+            Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: GetBuilder<VideoPlayController>(
+                      builder: (_) {
+                        return controller.controller != null
+                            ? Chewie(controller: controller.controller!)
+                            : Container(
+                                color: Colors.grey.withOpacity(0.5),
+                                child: const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                ),
+                              );
+                      },
                     ),
                   ),
-                  SizedBox(
-                    height: 30.h,
+                ),
+                SizedBox(height: 30.h),
+                Text(
+                  video.description,
+                  textAlign: TextAlign.justify,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.archivoBlack,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: AppColors.black,
                   ),
-                  Text(
-                    video.description,
-                    style: AppTextStyle.inter14Normal400().copyWith(
-                      color: AppColors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
+                ),
+                const SizedBox(height: 15),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      color: const Color(0xffF1F1F1),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          offset: Offset(0, 4),
+                          blurRadius: 4,
+                          spreadRadius: 0,
+                        )
+                      ]),
+                  child: Column(
                     children: [
-                      Text(
-                        'Duration',
-                        style: AppTextStyle.inter18Normal700().copyWith(
-                          color: AppColors.black,
-                        ),
+                      Row(
+                        children: [
+                          const Text('Duration',
+                              style: TextStyle(
+                                  fontFamily: AppFonts.archivoBlack,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                  color: AppColors.black)),
+                          const Spacer(),
+                          Text(
+                            '${'${video.duration.minutes}'.padLeft(2, "0")} min',
+                            style: const TextStyle(
+                                fontFamily: AppFonts.archivoBlack,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                                color: AppColors.black),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 20.w),
-                      Text(
-                        '${'${video.duration.minutes}'.padLeft(2, "0")} min',
-                        style: AppTextStyle.inter18Normal400().copyWith(
-                          color: AppColors.black,
-                        ),
+                      Container(
+                        height: 1,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        width: MediaQuery.of(context).size.width,
+                        color: const Color(0xffB9B9B9),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Text(
-                        'Weekly Views',
-                        style: AppTextStyle.inter18Normal700().copyWith(
-                          color: AppColors.black,
-                        ),
-                      ),
-                      SizedBox(width: 20.w),
-                      GetBuilder<VideoPlayController>(
-                        builder: (_) {
-                          return Text(
+                      Row(
+                        children: [
+                          const Text(
+                            'Weekly Views',
+                            style: TextStyle(
+                                fontFamily: AppFonts.archivoBlack,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: AppColors.black),
+                          ),
+                          const Spacer(),
+                          Text(
                             '${controller.weeklyViews}'.padLeft(2, "0"),
-                            style: AppTextStyle.inter18Normal400().copyWith(
-                              color: AppColors.black,
-                            ),
-                          );
-                        },
+                            style: const TextStyle(
+                                fontFamily: AppFonts.archivoBlack,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                                color: AppColors.black),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Text(
-                        'Total Views',
-                        style: AppTextStyle.inter18Normal700().copyWith(
-                          color: AppColors.black,
-                        ),
+                      Container(
+                        height: 1,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        width: MediaQuery.of(context).size.width,
+                        color: const Color(0xffB9B9B9),
                       ),
-                      SizedBox(width: 20.w),
-                      GetBuilder<VideoPlayController>(
-                        builder: (_) {
-                          return Text(
+                      Row(
+                        children: [
+                          const Text(
+                            'Total Views',
+                            style: TextStyle(
+                                fontFamily: AppFonts.archivoBlack,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: AppColors.black),
+                          ),
+                          const Spacer(),
+                          Text(
                             '${controller.totalViews}'.padLeft(2, "0"),
-                            style: AppTextStyle.inter18Normal400().copyWith(
-                              color: AppColors.black,
-                            ),
-                          );
-                        },
+                            style: const TextStyle(
+                                fontFamily: AppFonts.archivoBlack,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                                color: AppColors.black),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 50),
+              ],
             ),
             AppButton(
               text: 'Delete Video',

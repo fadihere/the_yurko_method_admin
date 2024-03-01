@@ -31,6 +31,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
   final picker = ImagePicker();
   Uint8List? imageBytes;
   bool isUploading = false;
+  DateTime dateTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -245,6 +246,9 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
         minutes: duration.inMinutes,
         seconds: duration.inSeconds,
       ),
+      pdfUrl: '',
+      webLink: '',
+      dateTime: dateTime.millisecondsSinceEpoch,
     );
 
     await FirestoreService().createVideo(video);

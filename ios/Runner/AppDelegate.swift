@@ -2,7 +2,6 @@ import UIKit
 import Flutter
 import FirebaseCore
 import FirebaseFirestore
-import StripeCore
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {

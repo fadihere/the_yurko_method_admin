@@ -6,7 +6,7 @@ import 'package:the_yurko_method/features/auth/data/models/user_model.dart';
 import 'package:the_yurko_method/features/home/data/model/video_model.dart';
 import 'package:the_yurko_method/features/home/data/model/view_model.dart';
 
-enum Collection { users, videos, views }
+enum Collection { users, videos, views, masterVideos }
 
 class FirestoreService {
   Future<bool> createUser(UserModel user) async {
@@ -28,6 +28,21 @@ class FirestoreService {
     try {
       await FirebaseFirestore.instance
           .collection(Collection.videos.name)
+          .doc(video.id)
+          .set(video.toMap());
+      return true;
+    } on FirebaseException catch (e) {
+      log(e.message.toString());
+      Get.snackbar(e.code, e.message ?? "something went wrong");
+
+      return false;
+    }
+  }
+
+  Future<bool> createMasterVideo(VideoModel video) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(Collection.masterVideos.name)
           .doc(video.id)
           .set(video.toMap());
       return true;

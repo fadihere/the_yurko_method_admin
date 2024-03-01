@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class UserModel {
   final String uid;
   final String firstName;
@@ -12,6 +10,8 @@ class UserModel {
   final String phone;
   final String role;
   final String? profileUrl;
+  final String referalCode;
+
   UserModel({
     required this.uid,
     required this.firstName,
@@ -19,8 +19,9 @@ class UserModel {
     required this.createdAt,
     required this.email,
     required this.phone,
-    this.profileUrl,
     required this.role,
+    this.profileUrl,
+    required this.referalCode,
   });
 
   UserModel copyWith({
@@ -30,8 +31,9 @@ class UserModel {
     DateTime? createdAt,
     String? email,
     String? phone,
-    String? profileUrl,
     String? role,
+    String? profileUrl,
+    String? referalCode,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -40,8 +42,9 @@ class UserModel {
       createdAt: createdAt ?? this.createdAt,
       email: email ?? this.email,
       phone: phone ?? this.phone,
-      profileUrl: profileUrl ?? this.profileUrl,
       role: role ?? this.role,
+      profileUrl: profileUrl ?? this.profileUrl,
+      referalCode: referalCode ?? this.referalCode,
     );
   }
 
@@ -50,11 +53,12 @@ class UserModel {
       'uid': uid,
       'firstName': firstName,
       'lastName': lastName,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'createdAt': createdAt.millisecondsSinceEpoch,
       'email': email,
       'phone': phone,
-      'profileUrl': profileUrl,
       'role': role,
+      'profileUrl': profileUrl,
+      'referalCode': referalCode,
     };
   }
 
@@ -63,12 +67,13 @@ class UserModel {
       uid: map['uid'] as String,
       firstName: map['firstName'] as String,
       lastName: map['lastName'] as String,
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
       email: map['email'] as String,
       phone: map['phone'] as String,
+      role: map['role'] as String,
       profileUrl:
           map['profileUrl'] != null ? map['profileUrl'] as String : null,
-      role: map['role'] as String,
+      referalCode: map['referalCode'] ?? '',
     );
   }
 
@@ -79,7 +84,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, createdAt: $createdAt, email: $email, phone: $phone, profileUrl: $profileUrl, role: $role)';
+    return 'UserModel(uid: $uid, firstName: $firstName, lastName: $lastName, createdAt: $createdAt, email: $email, phone: $phone, role: $role, profileUrl: $profileUrl, referalCode: $referalCode)';
   }
 
   @override
@@ -92,8 +97,9 @@ class UserModel {
         other.createdAt == createdAt &&
         other.email == email &&
         other.phone == phone &&
+        other.role == role &&
         other.profileUrl == profileUrl &&
-        other.role == role;
+        other.referalCode == referalCode;
   }
 
   @override
@@ -104,7 +110,8 @@ class UserModel {
         createdAt.hashCode ^
         email.hashCode ^
         phone.hashCode ^
+        role.hashCode ^
         profileUrl.hashCode ^
-        role.hashCode;
+        referalCode.hashCode;
   }
 }

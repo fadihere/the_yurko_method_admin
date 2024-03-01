@@ -1,6 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VideoModel {
   final String id;
@@ -13,6 +12,10 @@ class VideoModel {
   final int totalViews;
   final int? order;
   final DurationModel duration;
+  final String pdfUrl;
+  final String webLink;
+  final int dateTime;
+
   VideoModel({
     required this.id,
     required this.url,
@@ -22,8 +25,11 @@ class VideoModel {
     required this.thumbnail,
     required this.weeklyViews,
     required this.totalViews,
-    required this.duration,
     this.order,
+    required this.duration,
+    required this.pdfUrl,
+    required this.webLink,
+    required this.dateTime,
   });
 
   VideoModel copyWith({
@@ -35,8 +41,11 @@ class VideoModel {
     String? thumbnail,
     int? weeklyViews,
     int? totalViews,
-    DurationModel? duration,
     int? order,
+    DurationModel? duration,
+    String? pdfUrl,
+    String? webLink,
+    int? dateTime,
   }) {
     return VideoModel(
       id: id ?? this.id,
@@ -47,8 +56,11 @@ class VideoModel {
       thumbnail: thumbnail ?? this.thumbnail,
       weeklyViews: weeklyViews ?? this.weeklyViews,
       totalViews: totalViews ?? this.totalViews,
-      duration: duration ?? this.duration,
       order: order ?? this.order,
+      duration: duration ?? this.duration,
+      pdfUrl: pdfUrl ?? this.pdfUrl,
+      webLink: webLink ?? this.webLink,
+      dateTime: dateTime ?? this.dateTime,
     );
   }
 
@@ -58,12 +70,15 @@ class VideoModel {
       'url': url,
       'title': title,
       'description': description,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'createdAt': createdAt.millisecondsSinceEpoch,
       'thumbnail': thumbnail,
       'weeklyViews': weeklyViews,
       'totalViews': totalViews,
+      'order': order,
       'duration': duration.toMap(),
-      'order': order
+      'pdfUrl': pdfUrl,
+      'webLink': webLink,
+      'dateTime': dateTime,
     };
   }
 
@@ -73,12 +88,15 @@ class VideoModel {
       url: map['url'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       thumbnail: map['thumbnail'] as String,
       weeklyViews: map['weeklyViews'] as int,
       totalViews: map['totalViews'] as int,
+      order: map['order'] != null ? map['order'] as int : null,
       duration: DurationModel.fromMap(map['duration'] as Map<String, dynamic>),
-      order: map['order'] as int?,
+      pdfUrl: map['pdfUrl'] as String,
+      webLink: map['webLink'] as String,
+      dateTime: map['dateTime'] as int,
     );
   }
 
@@ -89,7 +107,7 @@ class VideoModel {
 
   @override
   String toString() {
-    return 'VideoModel(id: $id, url: $url, title: $title, description: $description, createdAt: $createdAt, thumbnail: $thumbnail, weeklyViews: $weeklyViews, totalViews: $totalViews, duration: $duration)';
+    return 'VideoModel(id: $id, url: $url, title: $title, description: $description, createdAt: $createdAt, thumbnail: $thumbnail, weeklyViews: $weeklyViews, totalViews: $totalViews, order: $order, duration: $duration, pdfUrl: $pdfUrl, webLink: $webLink, dateTime: $dateTime)';
   }
 
   @override
@@ -104,7 +122,11 @@ class VideoModel {
         other.thumbnail == thumbnail &&
         other.weeklyViews == weeklyViews &&
         other.totalViews == totalViews &&
-        other.duration == duration;
+        other.order == order &&
+        other.duration == duration &&
+        other.pdfUrl == pdfUrl &&
+        other.webLink == webLink &&
+        other.dateTime == dateTime;
   }
 
   @override
@@ -117,7 +139,11 @@ class VideoModel {
         thumbnail.hashCode ^
         weeklyViews.hashCode ^
         totalViews.hashCode ^
-        duration.hashCode;
+        order.hashCode ^
+        duration.hashCode ^
+        pdfUrl.hashCode ^
+        webLink.hashCode ^
+        dateTime.hashCode;
   }
 }
 
